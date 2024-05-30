@@ -6,14 +6,6 @@ document.addEventListener('DOMContentLoaded', function() {
     var budgetDateInput = document.getElementById("budgetDateInput");
     budgetDateInput.value = currentDate; // 오늘 날짜로 초기화
 
-    var calendarEl = document.getElementById('calendar');
-    var calendar = new FullCalendar.Calendar(calendarEl, {
-        initialView: 'dayGridMonth',
-        locale: 'ko',
-        height: 'auto'
-    });
-    calendar.render();
-
     loadShoppingList();
     loadHistory();
 });
@@ -28,7 +20,6 @@ function setBudget() {
     if (!isNaN(budgetValue) && budgetValue > 0) {
         budget = budgetValue;
         document.getElementById("budgetStatus").textContent = "예산: ₩" + budget.toLocaleString('en-US');
-        updateRemainingBudget();
         saveShoppingList();
     } else {
         alert("유효한 예산을 입력하세요!");
@@ -39,7 +30,6 @@ function setPresetBudget(amount) {
     budget = amount;
     document.getElementById("budgetInput").value = budget.toLocaleString('ko-KR');
     document.getElementById("budgetStatus").textContent = "예산: ₩" + budget.toLocaleString('en-US');
-    updateRemainingBudget();
     saveShoppingList();
 }
 
@@ -97,7 +87,6 @@ function updateTotal(price) {
         totalSpent += amount;
         var totalAmountDiv = document.getElementById("totalAmount");
         totalAmountDiv.textContent = "오늘 구매한 총 금액: ₩" + totalSpent.toLocaleString('en-US');
-        updateRemainingBudget();
         saveShoppingList();
 
         var today = new Date();
@@ -109,18 +98,6 @@ function updateTotal(price) {
         dateDiv.textContent = "실행 날짜: " + currentDate;
     } else {
         alert("유효한 가격을 입력하세요!");
-    }
-}
-
-function updateRemainingBudget() {
-    var remainingBudget = budget - totalSpent;
-    var remainingBudgetDiv = document.getElementById("remainingBudget");
-    remainingBudgetDiv.textContent = "잔액: ₩" + remainingBudget.toLocaleString('en-US');
-
-    if (remainingBudget < 0) {
-        remainingBudgetDiv.style.color = "red";
-    } else {
-        remainingBudgetDiv.style.color = "black";
     }
 }
 
@@ -167,7 +144,6 @@ function loadShoppingList() {
         totalSpent = savedData.totalSpent;
         document.getElementById("budgetStatus").textContent = "예산: ₩" + budget.toLocaleString('en-US');
         document.getElementById("totalAmount").textContent = "오늘 구매한 총 금액: ₩" + totalSpent.toLocaleString('en-US');
-        updateRemainingBudget();
         const itemList = document.getElementById("itemList");
         itemList.innerHTML = '';
         savedData.items.forEach(itemText => {
@@ -190,7 +166,7 @@ function loadShoppingList() {
                 }
             };
 
-            var checkbox = document.createElement("input");
+            const checkbox = document.createElement("input");
             checkbox.type = "checkbox";
 
             li.appendChild(checkbox);
@@ -232,15 +208,18 @@ function deleteSelectedItems() {
         const date = checkbox.dataset.date;
         const index = checkbox.dataset.index;
         if (historyData[date]) {
+            const price = historyData[date][index].price;
             historyData[date].splice(index, 1);
             if (historyData[date].length === 0) {
                 delete historyData[date];
             }
+            totalSpent -= price; // 총 금액에서 삭제된 항목의 가격을 뺍니다.
         }
     });
 
     localStorage.setItem('historyData', JSON.stringify(historyData));
     loadHistory();
+    updateTotal(0); // 총 금액을 다시 계산하여 업데이트합니다.
 }
 
 function removeSelectedItemsFromList() {
@@ -253,7 +232,7 @@ function removeSelectedItemsFromList() {
             var deletePrice = parseFloat(deleteConfirmation.trim().replace(/,/g, ''));
             if (!isNaN(deletePrice) && deletePrice > 0) {
                 li.parentNode.removeChild(li);
-                updateTotal(-deletePrice);
+                updateTotal(-deletePrice); // 총 금액에서 삭제된 항목의 가격을 뺍니다.
             } else {
                 alert("유효한 가격을 입력하세요!");
             }
@@ -268,6 +247,5 @@ function resetValues() {
     document.getElementById("budgetInput").value = '';
     document.getElementById("budgetStatus").textContent = "예산 상태: 설정되지 않음";
     document.getElementById("totalAmount").textContent = "오늘 구매한 총 금액: ₩0";
-    document.getElementById("remainingBudget").textContent = "잔액: ₩0";
     saveShoppingList();
 }
