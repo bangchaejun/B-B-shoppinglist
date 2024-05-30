@@ -76,7 +76,7 @@ function addItem() {
 
 function deleteItem(item, itemName, price) {
     item.parentNode.removeChild(item);
-    updateTotal(-price);
+    updateTotal(price);
     saveDeletedItem(itemName, price);
     saveShoppingList();
 }
@@ -202,7 +202,7 @@ function loadHistory() {
 
 function deleteSelectedItems() {
     const checkboxes = document.querySelectorAll('#historyList input[type="checkbox"]:checked');
-    const historyData = JSON.parse(localStorage.getItem('historyData')) || {};
+    let historyData = JSON.parse(localStorage.getItem('historyData')) || {};
 
     checkboxes.forEach(checkbox => {
         const date = checkbox.dataset.date;
@@ -219,24 +219,14 @@ function deleteSelectedItems() {
 
     localStorage.setItem('historyData', JSON.stringify(historyData));
     loadHistory();
-    updateTotal(0); // 총 금액을 다시 계산하여 업데이트합니다.
+    saveShoppingList(); // 총 금액을 다시 계산하여 업데이트합니다.
 }
 
 function removeSelectedItemsFromList() {
     const checkboxes = document.querySelectorAll('#itemList input[type="checkbox"]:checked');
     checkboxes.forEach(checkbox => {
         const li = checkbox.parentElement;
-        const itemText = li.querySelector('.itemText').textContent;
-        var deleteConfirmation = prompt("'" + itemText + "'의 가격을 입력하세요.");
-        if (deleteConfirmation !== null) {
-            var deletePrice = parseFloat(deleteConfirmation.trim().replace(/,/g, ''));
-            if (!isNaN(deletePrice) && deletePrice > 0) {
-                li.parentNode.removeChild(li);
-                updateTotal(-deletePrice); // 총 금액에서 삭제된 항목의 가격을 뺍니다.
-            } else {
-                alert("유효한 가격을 입력하세요!");
-            }
-        }
+        li.parentNode.removeChild(li);
     });
     saveShoppingList();
 }
