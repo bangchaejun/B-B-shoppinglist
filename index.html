@@ -3,15 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>장보기 목록</title>
+    <title>Shopping List</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap">
 </head>
 <body>
     <div class="container">
-        <h1>shoppingList</h1>
-        <input type="text" id="itemInput" placeholder="항목을 입력하세요">
-        <button id="addItemButton">추가</button>
-        <ul id="shoppingList"></ul>
+        <h1><i class="fas fa-shopping-cart"></i> Shopping List</h1>
+        <div id="budgetSection">
+            <input type="date" id="budgetDateInput" value="">
+            <input type="text" id="budgetInput" placeholder="예산 설정 (₩)" oninput="formatCurrency(this)">
+            <div id="budgetButtons">
+                <button onclick="setPresetBudget(30000)">₩30,000</button>
+                <button onclick="setPresetBudget(50000)">₩50,000</button>
+                <button onclick="setPresetBudget(100000)">₩100,000</button>
+                <button onclick="setPresetBudget(150000)">₩150,000</button>
+            </div>
+            <button onclick="setBudget()"><i class="fas fa-check"></i> 설정</button>
+        </div>
+        <div id="addItemSection">
+            <input type="text" id="itemNameInput" placeholder="무엇을 구매할까요?">
+            <button onclick="addItem()"><i class="fas fa-plus"></i> 추가</button>
+        </div>
+        <ul id="itemList"></ul>
+        <button id="removeSelectedButton" onclick="removeSelectedItemsFromList()"><i class="fas fa-trash-alt"></i> 선택 항목 삭제</button>
+        <div id="totalAmountContainer">
+            <div id="totalAmount">오늘 구매한 총 금액: ₩0</div>
+            <div id="remainingBudget">잔액: ₩0</div>
+            <div id="budgetStatus">예산 상태: 설정되지 않음</div>
+            <div id="date"></div>
+        </div>
+        <div id="historySection">
+            <h2>장보기 기록</h2>
+            <ul id="historyList"></ul>
+            <button id="clearHistoryButton" onclick="deleteSelectedItems()"><i class="fas fa-trash-alt"></i> 선택 항목 지우기</button>
+        </div>
     </div>
     <script src="script.js"></script>
 </body>
