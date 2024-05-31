@@ -10,6 +10,11 @@ document.addEventListener('DOMContentLoaded', function() {
     loadHistory();
 });
 
+function updateBalance() {
+    const balance = budget - totalSpent;
+    document.getElementById("balanceStatus").textContent = "잔액: ₩" + balance.toLocaleString('en-US');
+}
+
 function setBudget() {
     var budgetInput = document.getElementById("budgetInput");
     var budgetDateInput = document.getElementById("budgetDateInput");
@@ -20,6 +25,7 @@ function setBudget() {
     if (!isNaN(budgetValue) && budgetValue > 0) {
         budget = budgetValue;
         document.getElementById("budgetStatus").textContent = "예산: ₩" + budget.toLocaleString('en-US');
+        updateBalance();
         saveShoppingList();
     } else {
         alert("유효한 예산을 입력하세요!");
@@ -30,6 +36,7 @@ function setPresetBudget(amount) {
     budget = amount;
     document.getElementById("budgetInput").value = budget.toLocaleString('ko-KR');
     document.getElementById("budgetStatus").textContent = "예산: ₩" + budget.toLocaleString('en-US');
+    updateBalance();
     saveShoppingList();
 }
 
@@ -69,6 +76,7 @@ function addItem() {
         itemList.appendChild(li);
         itemNameInput.value = "";
         saveShoppingList();
+        updateBalance();
     } else {
         alert("유효한 항목을 입력하세요!");
     }
@@ -76,55 +84,11 @@ function addItem() {
 
 function deleteItem(item, itemName, price) {
     item.parentNode.removeChild(item);
-    updateTotal(price);
+    totalSpent += price;
+    updateTotal();
     saveDeletedItem(itemName, price);
     saveShoppingList();
-}
-
-function updateTotal(price) {
-    var amount = parseFloat(price);
-    if (!isNaN(amount)) {
-        totalSpent += amount;
-        var totalAmountDiv = document.getElementById("totalAmount");
-        totalAmountDiv.textContent = "오늘 구매한 총 금액: ₩" + totalSpent.toLocaleString('en-US');
-        saveShoppingList();
-
-        var today = new Date();
-        var dd = String(today.getDate()).padStart(2, '0');
-        var mm = String(today.getMonth() + 1).padStart(2, '0'); // January is 0!
-        var yyyy = today.getFullYear();
-        var currentDate = yyyy + '/' + mm + '/' + dd;
-        var dateDiv = document.getElementById("date");
-        dateDiv.textContent = "실행 날짜: " + currentDate;
-    } else {
-        alert("유효한 가격을 입력하세요!");
-    }
-}
-
-function formatCurrency(input) {
-    // 입력값에서 숫자만 남기기
-    let value = input.value.replace(/[^0-9]/g, '');
-    if (value === '') return;
-
-    // 천 단위 콤마 추가
-    value = parseInt(value, 10).toLocaleString('ko-KR');
-
-    // 값 갱신
-    input.value = value;
-}
-
-function saveShoppingList() {
-    const items = [];
-    document.querySelectorAll('#itemList li').forEach(li => {
-        items.push(li.querySelector('span').textContent);
-    });
-    const shoppingData = {
-        budget,
-        totalSpent,
-        items
-    };
-    localStorage.setItem(currentDate, JSON.stringify(shoppingData));
-    loadHistory();
+    updateBalance();
 }
 
 function saveDeletedItem(itemName, price) {
@@ -135,6 +99,24 @@ function saveDeletedItem(itemName, price) {
     historyData[currentDate].push({ itemName, price });
     localStorage.setItem('historyData', JSON.stringify(historyData));
     loadHistory();
+}
+
+function updateTotal() {
+    var totalAmountDiv = document.getElementById("totalAmount");
+    totalAmountDiv.textContent = "오늘 구매한 총 금액: ₩" + totalSpent.toLocaleString('en-US');
+}
+
+function resetValues() {
+    budget = 0;
+    totalSpent = 0;
+    document.getElementById("budgetInput").value = '';
+    document.getElementById("budgetStatus").textContent = "예산: 설정되지 않음";
+    document.getElementById("totalAmount").textContent = "오늘 구매한 총 금액: ₩0";
+    document.getElementById("balanceStatus").textContent = "잔액: ₩0";
+    localStorage.removeItem('historyData');
+    localStorage.removeItem(currentDate);
+    document.getElementById("itemList").innerHTML = '';
+    document.getElementById("historyList").innerHTML = '';
 }
 
 function loadShoppingList() {
@@ -174,6 +156,7 @@ function loadShoppingList() {
             li.appendChild(deleteButton);
             itemList.appendChild(li);
         });
+        updateBalance();
     }
 }
 
@@ -183,7 +166,10 @@ function loadHistory() {
     const historyData = JSON.parse(localStorage.getItem('historyData')) || {};
     for (const date in historyData) {
         const dateItem = document.createElement("li");
-        dateItem.textContent = date;
+        const dateText = document.createElement("span");
+        dateText.textContent = date;
+        dateItem.appendChild(dateText);
+
         const ul = document.createElement("ul");
         historyData[date].forEach((entry, index) => {
             const li = document.createElement("li");
@@ -191,6 +177,7 @@ function loadHistory() {
             checkbox.type = "checkbox";
             checkbox.dataset.date = date;
             checkbox.dataset.index = index;
+
             li.appendChild(checkbox);
             li.appendChild(document.createTextNode(`${entry.itemName} - ₩${entry.price.toLocaleString('en-US')}`));
             ul.appendChild(li);
@@ -198,6 +185,16 @@ function loadHistory() {
         dateItem.appendChild(ul);
         historyList.appendChild(dateItem);
     }
+}
+
+function removeSelectedItemsFromList() {
+    const checkboxes = document.querySelectorAll('#itemList input[type="checkbox"]:checked');
+    checkboxes.forEach(checkbox => {
+        const li = checkbox.parentElement;
+        li.parentNode.removeChild(li);
+    });
+    saveShoppingList();
+    updateBalance();
 }
 
 function deleteSelectedItems() {
@@ -208,34 +205,36 @@ function deleteSelectedItems() {
         const date = checkbox.dataset.date;
         const index = checkbox.dataset.index;
         if (historyData[date]) {
-            const price = historyData[date][index].price;
             historyData[date].splice(index, 1);
             if (historyData[date].length === 0) {
                 delete historyData[date];
             }
-            totalSpent -= price; // 총 금액에서 삭제된 항목의 가격을 뺍니다.
         }
     });
 
     localStorage.setItem('historyData', JSON.stringify(historyData));
     loadHistory();
-    saveShoppingList(); // 총 금액을 다시 계산하여 업데이트합니다.
 }
 
-function removeSelectedItemsFromList() {
-    const checkboxes = document.querySelectorAll('#itemList input[type="checkbox"]:checked');
-    checkboxes.forEach(checkbox => {
-        const li = checkbox.parentElement;
-        li.parentNode.removeChild(li);
+function formatCurrency(input) {
+    let value = input.value.replace(/[^0-9]/g, '');
+    if (value === '') return;
+
+    value = parseInt(value, 10).toLocaleString('ko-KR');
+
+    input.value = value;
+}
+
+function saveShoppingList() {
+    const items = [];
+    document.querySelectorAll('#itemList li').forEach(li => {
+        items.push(li.querySelector('span').textContent);
     });
-    saveShoppingList();
-}
-
-function resetValues() {
-    budget = 0;
-    totalSpent = 0;
-    document.getElementById("budgetInput").value = '';
-    document.getElementById("budgetStatus").textContent = "예산 상태: 설정되지 않음";
-    document.getElementById("totalAmount").textContent = "오늘 구매한 총 금액: ₩0";
-    saveShoppingList();
+    const shoppingData = {
+        budget,
+        totalSpent,
+        items
+    };
+    localStorage.setItem(currentDate, JSON.stringify(shoppingData));
+    loadHistory();
 }
