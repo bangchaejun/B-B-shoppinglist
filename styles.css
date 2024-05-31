@@ -218,7 +218,12 @@ li:hover {
     background-color: #ff4c4c;
 }
 
-#shareButton {
+#buttonContainer {
+    text-align: center;
+    margin-top: 40px;
+}
+
+#shareButton, #resetButton {
     margin-top: 10px;
     padding: 10px 20px;
     background-color: #FFEB3B; /* 카카오톡 색상 */
@@ -228,12 +233,13 @@ li:hover {
     cursor: pointer;
     font-weight: bold; /* 글씨를 굵게 */
     transition: background-color 0.3s ease;
+    display: inline-block; /* 중앙 정렬 */
 }
 
-#shareButton i {
+#shareButton i, #resetButton i {
     margin-right: 5px;
 }
 
-#shareButton:hover {
+#shareButton:hover, #resetButton:hover {
     background-color: #FFDD00;
 }

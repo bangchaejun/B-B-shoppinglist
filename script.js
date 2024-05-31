@@ -263,7 +263,7 @@ function shareHistory() {
     }
     textToShare += `\nTotal Amount: ₩${totalAmount.toLocaleString('en-US')}`;
     copyToClipboard(textToShare);
-    alert('쇼핑 히스토리가 클립보드에 복사되었습니다. 카카오톡에 붙여넣기 하세요.');
+    alert('쇼핑 히스토리가 클립보드에 복사되었습니다.');
 }
 
 function copyToClipboard(text) {
