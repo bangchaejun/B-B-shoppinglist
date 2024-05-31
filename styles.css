@@ -1,3 +1,4 @@
+/* 기본 스타일 */
 body {
     font-family: 'Roboto', sans-serif;
     background: linear-gradient(to right, #ffecd2 0%, #fcb69f 100%);
@@ -7,6 +8,7 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
+    transition: background 0.3s;
 }
 
 .container {
@@ -19,18 +21,34 @@ body {
     animation: fadeIn 1s ease-in-out;
 }
 
+/* 반응형 디자인 */
+@media (max-width: 600px) {
+    .container {
+        padding: 10px;
+    }
+
+    h1 {
+        font-size: 1.5em;
+    }
+
+    button {
+        font-size: 14px;
+        padding: 8px 16px;
+    }
+}
+
 @keyframes fadeIn {
     from { opacity: 0; }
     to { opacity: 1; }
 }
 
+/* 추가 스타일 */
 h1 {
     text-align: center;
     color: #333;
     margin-bottom: 20px;
     font-size: 2.5em;
     font-weight: 700;
-    font-family: 'Roboto', sans-serif;
 }
 
 #budgetSection, #addItemSection {
@@ -41,34 +59,42 @@ h1 {
 }
 
 #budgetInput, #itemNameInput, #budgetDateInput {
-    flex: 1 1 calc(100% - 100px);
+    flex: 1;
     padding: 10px;
     border: 1px solid #ddd;
     border-radius: 5px;
     font-size: 16px;
-    min-width: 0;
 }
 
-#budgetButtons {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
+.dropdown {
+    position: relative;
+    display: inline-block;
+    width: 100%;
 }
 
-#budgetButtons button {
-    flex: 1 1 calc(25% - 10px);
-    padding: 10px;
-    border: none;
-    border-radius: 5px;
-    background-color: #007bff;
-    color: #fff;
-    font-size: 16px;
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 100%;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+}
+
+.dropdown-content div {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
     cursor: pointer;
-    transition: background-color 0.3s ease;
 }
 
-#budgetButtons button:hover {
-    background-color: #0056b3;
+.dropdown-content div:hover {
+    background-color: #f1f1f1;
+}
+
+.show {
+    display: block;
 }
 
 button {
@@ -136,18 +162,26 @@ li:hover {
     background-color: #e53935;
 }
 
-#totalAmountContainer, #historySection {
+#totalAmountContainer, #historyContainer {
     margin-top: 20px;
     text-align: center;
 }
 
-#totalAmountContainer div, #historySection h2 {
+#totalAmountContainer div, #historyContainer h2 {
     margin-bottom: 10px;
     font-size: 18px;
 }
 
 #totalAmount, #budgetStatus, #date {
     font-weight: bold;
+}
+
+#historyContainer {
+    margin-top: 30px;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 #historyList li {

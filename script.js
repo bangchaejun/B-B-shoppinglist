@@ -28,7 +28,7 @@ function setBudget() {
         updateBalance();
         saveShoppingList();
     } else {
-        alert("유효한 예산을 입력하세요!");
+        alert('유효한 예산을 입력하세요!');
     }
 }
 
@@ -38,6 +38,7 @@ function setPresetBudget(amount) {
     document.getElementById("budgetStatus").textContent = "예산: ₩" + budget.toLocaleString('en-US');
     updateBalance();
     saveShoppingList();
+    hideDropdown();
 }
 
 function addItem() {
@@ -62,7 +63,7 @@ function addItem() {
                 if (!isNaN(deletePrice) && deletePrice > 0) {
                     deleteItem(li, itemName, deletePrice);
                 } else {
-                    alert("유효한 가격을 입력하세요!");
+                    alert('유효한 가격을 입력하세요!');
                 }
             }
         };
@@ -78,7 +79,7 @@ function addItem() {
         saveShoppingList();
         updateBalance();
     } else {
-        alert("유효한 항목을 입력하세요!");
+        alert('유효한 항목을 입력하세요!');
     }
 }
 
@@ -143,7 +144,7 @@ function loadShoppingList() {
                     if (!isNaN(deletePrice) && deletePrice > 0) {
                         deleteItem(li, itemText, deletePrice);
                     } else {
-                        alert("유효한 가격을 입력하세요!");
+                        alert('유효한 가격을 입력하세요!');
                     }
                 }
             };
@@ -237,4 +238,14 @@ function saveShoppingList() {
     };
     localStorage.setItem(currentDate, JSON.stringify(shoppingData));
     loadHistory();
+}
+
+function showDropdown() {
+    document.getElementById("dropdownMenu").classList.add("show");
+}
+
+function hideDropdown() {
+    setTimeout(() => {
+        document.getElementById("dropdownMenu").classList.remove("show");
+    }, 200); // 블러 이벤트가 발생한 후 일정 시간 동안 대기한 후 드롭다운 메뉴를 숨깁니다.
 }
