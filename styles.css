@@ -217,3 +217,23 @@ li:hover {
 #removeSelectedButton:hover, #clearHistoryButton:hover, #resetButton:hover {
     background-color: #ff4c4c;
 }
+
+#shareButton {
+    margin-top: 10px;
+    padding: 10px 20px;
+    background-color: #FFEB3B; /* 카카오톡 색상 */
+    color: black;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold; /* 글씨를 굵게 */
+    transition: background-color 0.3s ease;
+}
+
+#shareButton i {
+    margin-right: 5px;
+}
+
+#shareButton:hover {
+    background-color: #FFDD00;
+}

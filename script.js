@@ -249,3 +249,28 @@ function hideDropdown() {
         document.getElementById("dropdownMenu").classList.remove("show");
     }, 200); // 블러 이벤트가 발생한 후 일정 시간 동안 대기한 후 드롭다운 메뉴를 숨깁니다.
 }
+
+function shareHistory() {
+    const historyData = JSON.parse(localStorage.getItem('historyData')) || {};
+    let textToShare = "Shopping History:\n";
+    let totalAmount = 0;
+    for (const date in historyData) {
+        textToShare += `${date}:\n`;
+        historyData[date].forEach(entry => {
+            textToShare += `- ${entry.itemName}: ₩${entry.price.toLocaleString('en-US')}\n`;
+            totalAmount += entry.price;
+        });
+    }
+    textToShare += `\nTotal Amount: ₩${totalAmount.toLocaleString('en-US')}`;
+    copyToClipboard(textToShare);
+    alert('쇼핑 히스토리가 클립보드에 복사되었습니다. 카카오톡에 붙여넣기 하세요.');
+}
+
+function copyToClipboard(text) {
+    const textArea = document.createElement('textarea');
+    textArea.value = text;
+    document.body.appendChild(textArea);
+    textArea.select();
+    document.execCommand('copy');
+    document.body.removeChild(textArea);
+}
