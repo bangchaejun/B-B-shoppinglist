@@ -19,6 +19,7 @@ body {
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     animation: fadeIn 1s ease-in-out;
+    position: relative; /* 상대 위치로 변경 */
 }
 
 /* 반응형 디자인 */
@@ -49,6 +50,34 @@ h1 {
     margin-bottom: 20px;
     font-size: 2.5em;
     font-weight: 700;
+    position: relative;
+}
+
+.helpButton {
+    position: absolute;
+    right: 10px;
+    bottom: -10px;
+    background-color: #3498db;
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    padding: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s ease;
+    font-size: 14px;
+    width: 30px;
+    height: 30px;
+}
+
+.helpButton i {
+    margin: 0; /* 아이콘의 마진 제거 */
+}
+
+.helpButton:hover {
+    background-color: #2980b9;
 }
 
 #budgetSection, #addItemSection {
@@ -142,8 +171,8 @@ li:hover {
     transform: translateY(-5px);
 }
 
-.deleteButton {
-    background-color: #f44336;
+.purchaseButton {
+    background-color: #4caf50;
     color: #fff;
     border: none;
     border-radius: 5px;
@@ -154,12 +183,12 @@ li:hover {
     transition: background-color 0.3s ease;
 }
 
-.deleteButton i {
+.purchaseButton i {
     margin-right: 5px;
 }
 
-.deleteButton:hover {
-    background-color: #e53935;
+.purchaseButton:hover {
+    background-color: #45a049;
 }
 
 #totalAmountContainer, #historyContainer {
@@ -242,4 +271,27 @@ li:hover {
 
 #shareButton:hover, #resetButton:hover {
     background-color: #FFDD00;
+}
+
+/* 마트 휴무일 섹션 */
+#holidaySection {
+    text-align: center;
+    margin-bottom: 20px; /* 상단에 위치할 때 공간 확보 */
+    display: flex;
+    justify-content: center;
+    gap: 10px; /* 버튼 사이 간격 */
+}
+
+#holidaySection button {
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px; /* 버튼 크기를 작게 */
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#holidaySection button:hover {
+    background-color: #45a049;
 }

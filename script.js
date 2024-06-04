@@ -46,22 +46,31 @@ function addItem() {
     var itemName = itemNameInput.value.trim();
 
     if (itemName !== "") {
+        // 기존 항목 중복 확인
         var itemList = document.getElementById("itemList");
+        var items = itemList.getElementsByTagName("li");
+        for (var i = 0; i < items.length; i++) {
+            if (items[i].getElementsByClassName("itemText")[0].textContent === itemName) {
+                alert('목록에 들어있는 품목입니다.');
+                return;
+            }
+        }
+
         var li = document.createElement("li");
 
         var itemText = document.createElement("span");
         itemText.textContent = itemName;
         itemText.className = "itemText";
 
-        var deleteButton = document.createElement("button");
-        deleteButton.innerHTML = '<i class="fas fa-trash-alt"></i> 삭제';
-        deleteButton.className = "deleteButton";
-        deleteButton.onclick = function() {
-            var deleteConfirmation = prompt("'" + itemName + "'의 가격을 입력하세요.");
-            if (deleteConfirmation !== null) {
-                var deletePrice = parseFloat(deleteConfirmation.trim().replace(/,/g, ''));
-                if (!isNaN(deletePrice) && deletePrice > 0) {
-                    deleteItem(li, itemName, deletePrice);
+        var purchaseButton = document.createElement("button");
+        purchaseButton.innerHTML = '<i class="fas fa-shopping-cart"></i> 구매';
+        purchaseButton.className = "purchaseButton";
+        purchaseButton.onclick = function() {
+            var purchaseConfirmation = prompt("'" + itemName + "'의 가격을 입력하세요.");
+            if (purchaseConfirmation !== null) {
+                var purchasePrice = parseFloat(purchaseConfirmation.trim().replace(/,/g, ''));
+                if (!isNaN(purchasePrice) && purchasePrice > 0) {
+                    purchaseItem(li, itemName, purchasePrice);
                 } else {
                     alert('유효한 가격을 입력하세요!');
                 }
@@ -73,7 +82,7 @@ function addItem() {
 
         li.appendChild(checkbox);
         li.appendChild(itemText);
-        li.appendChild(deleteButton);
+        li.appendChild(purchaseButton);
         itemList.appendChild(li);
         itemNameInput.value = "";
         saveShoppingList();
@@ -81,6 +90,15 @@ function addItem() {
     } else {
         alert('유효한 항목을 입력하세요!');
     }
+}
+
+function purchaseItem(item, itemName, price) {
+    item.parentNode.removeChild(item);
+    totalSpent += price;
+    updateTotal();
+    saveDeletedItem(itemName, price);
+    saveShoppingList();
+    updateBalance();
 }
 
 function deleteItem(item, itemName, price) {
