@@ -62,6 +62,36 @@ function addItem() {
         itemText.textContent = itemName;
         itemText.className = "itemText";
 
+        var quantityContainer = document.createElement("div");
+        quantityContainer.className = "quantity";
+
+        var decreaseButton = document.createElement("button");
+        decreaseButton.textContent = "-";
+        decreaseButton.className = "quantity-button";
+        decreaseButton.onclick = function() {
+            updateQuantity(this.nextElementSibling, -1);
+        };
+
+        var quantityInput = document.createElement("input");
+        quantityInput.type = "number";
+        quantityInput.value = 1;
+        quantityInput.min = 1;
+        quantityInput.className = "quantity-input";
+        quantityInput.onchange = function() {
+            updateTotalAmount();
+        };
+
+        var increaseButton = document.createElement("button");
+        increaseButton.textContent = "+";
+        increaseButton.className = "quantity-button";
+        increaseButton.onclick = function() {
+            updateQuantity(this.previousElementSibling, 1);
+        };
+
+        quantityContainer.appendChild(decreaseButton);
+        quantityContainer.appendChild(quantityInput);
+        quantityContainer.appendChild(increaseButton);
+
         var purchaseButton = document.createElement("button");
         purchaseButton.innerHTML = '<i class="fas fa-shopping-cart"></i> 구매';
         purchaseButton.className = "purchaseButton";
@@ -70,7 +100,7 @@ function addItem() {
             if (purchaseConfirmation !== null) {
                 var purchasePrice = parseFloat(purchaseConfirmation.trim().replace(/,/g, ''));
                 if (!isNaN(purchasePrice) && purchasePrice > 0) {
-                    purchaseItem(li, itemName, purchasePrice);
+                    purchaseItem(li, itemName, purchasePrice * quantityInput.value, quantityInput.value);
                 } else {
                     alert('유효한 가격을 입력하세요!');
                 }
@@ -82,21 +112,31 @@ function addItem() {
 
         li.appendChild(checkbox);
         li.appendChild(itemText);
+        li.appendChild(quantityContainer);
         li.appendChild(purchaseButton);
         itemList.appendChild(li);
         itemNameInput.value = "";
         saveShoppingList();
-        updateBalance();
+        updateTotalAmount();
     } else {
         alert('유효한 항목을 입력하세요!');
     }
 }
 
-function purchaseItem(item, itemName, price) {
-    item.parentNode.removeChild(item);
-    totalSpent += price;
+function updateQuantity(input, delta) {
+    let value = parseInt(input.value) + delta;
+    if (value < 1) {
+        value = 1;
+    }
+    input.value = value;
+    updateTotalAmount();
+}
+
+function purchaseItem(item, itemName, totalPrice, quantity) {
+    totalSpent += totalPrice;
     updateTotal();
-    saveDeletedItem(itemName, price);
+    saveDeletedItem(itemName, totalPrice, quantity);
+    item.parentNode.removeChild(item);
     saveShoppingList();
     updateBalance();
 }
@@ -110,12 +150,12 @@ function deleteItem(item, itemName, price) {
     updateBalance();
 }
 
-function saveDeletedItem(itemName, price) {
+function saveDeletedItem(itemName, price, quantity) {
     let historyData = JSON.parse(localStorage.getItem('historyData')) || {};
     if (!historyData[currentDate]) {
         historyData[currentDate] = [];
     }
-    historyData[currentDate].push({ itemName, price });
+    historyData[currentDate].push({ itemName, price, quantity });
     localStorage.setItem('historyData', JSON.stringify(historyData));
     loadHistory();
 }
@@ -123,6 +163,20 @@ function saveDeletedItem(itemName, price) {
 function updateTotal() {
     var totalAmountDiv = document.getElementById("totalAmount");
     totalAmountDiv.textContent = "오늘 구매한 총 금액: ₩" + totalSpent.toLocaleString('en-US');
+}
+
+function updateTotalAmount() {
+    const items = document.querySelectorAll('#itemList li');
+    let newTotalSpent = 0;
+    items.forEach(item => {
+        const priceText = item.querySelector('.itemText').textContent.split(' - ₩')[1];
+        const price = parseInt(priceText ? priceText.replace(/[^0-9]/g, '') : 0);
+        const quantity = parseInt(item.querySelector('input[type="number"]').value);
+        newTotalSpent += price * quantity;
+    });
+    totalSpent = newTotalSpent;
+    updateTotal();
+    updateBalance();
 }
 
 function resetValues() {
@@ -147,20 +201,51 @@ function loadShoppingList() {
         document.getElementById("totalAmount").textContent = "오늘 구매한 총 금액: ₩" + totalSpent.toLocaleString('en-US');
         const itemList = document.getElementById("itemList");
         itemList.innerHTML = '';
-        savedData.items.forEach(itemText => {
+        savedData.items.forEach(itemData => {
             const li = document.createElement("li");
             const itemSpan = document.createElement("span");
-            itemSpan.textContent = itemText;
+            itemSpan.textContent = itemData.name;
             itemSpan.className = "itemText";
-            const deleteButton = document.createElement("button");
-            deleteButton.innerHTML = '<i class="fas fa-trash-alt"></i> 삭제';
-            deleteButton.className = "deleteButton";
-            deleteButton.onclick = function() {
-                var deleteConfirmation = prompt("'" + itemText + "'의 가격을 입력하세요.");
-                if (deleteConfirmation !== null) {
-                    var deletePrice = parseFloat(deleteConfirmation.trim().replace(/,/g, ''));
-                    if (!isNaN(deletePrice) && deletePrice > 0) {
-                        deleteItem(li, itemText, deletePrice);
+
+            const quantityContainer = document.createElement("div");
+            quantityContainer.className = "quantity";
+
+            const decreaseButton = document.createElement("button");
+            decreaseButton.textContent = "-";
+            decreaseButton.className = "quantity-button";
+            decreaseButton.onclick = function() {
+                updateQuantity(this.nextElementSibling, -1);
+            };
+
+            const quantityInput = document.createElement("input");
+            quantityInput.type = "number";
+            quantityInput.value = itemData.quantity;
+            quantityInput.min = 1;
+            quantityInput.className = "quantity-input";
+            quantityInput.onchange = function() {
+                updateTotalAmount();
+            };
+
+            const increaseButton = document.createElement("button");
+            increaseButton.textContent = "+";
+            increaseButton.className = "quantity-button";
+            increaseButton.onclick = function() {
+                updateQuantity(this.previousElementSibling, 1);
+            };
+
+            quantityContainer.appendChild(decreaseButton);
+            quantityContainer.appendChild(quantityInput);
+            quantityContainer.appendChild(increaseButton);
+
+            const purchaseButton = document.createElement("button");
+            purchaseButton.innerHTML = '<i class="fas fa-shopping-cart"></i> 구매';
+            purchaseButton.className = "purchaseButton";
+            purchaseButton.onclick = function() {
+                var purchaseConfirmation = prompt("'" + itemData.name + "'의 가격을 입력하세요.");
+                if (purchaseConfirmation !== null) {
+                    var purchasePrice = parseFloat(purchaseConfirmation.trim().replace(/,/g, ''));
+                    if (!isNaN(purchasePrice) && purchasePrice > 0) {
+                        purchaseItem(li, itemData.name, purchasePrice * quantityInput.value, quantityInput.value);
                     } else {
                         alert('유효한 가격을 입력하세요!');
                     }
@@ -172,7 +257,8 @@ function loadShoppingList() {
 
             li.appendChild(checkbox);
             li.appendChild(itemSpan);
-            li.appendChild(deleteButton);
+            li.appendChild(quantityContainer);
+            li.appendChild(purchaseButton);
             itemList.appendChild(li);
         });
         updateBalance();
@@ -183,6 +269,7 @@ function loadHistory() {
     const historyList = document.getElementById("historyList");
     historyList.innerHTML = '';
     const historyData = JSON.parse(localStorage.getItem('historyData')) || {};
+    let totalAmount = 0;
     for (const date in historyData) {
         const dateItem = document.createElement("li");
         const dateText = document.createElement("span");
@@ -198,12 +285,16 @@ function loadHistory() {
             checkbox.dataset.index = index;
 
             li.appendChild(checkbox);
-            li.appendChild(document.createTextNode(`${entry.itemName} - ₩${entry.price.toLocaleString('en-US')}`));
+            li.appendChild(document.createTextNode(`${entry.itemName} (${entry.quantity}) - ₩${entry.price.toLocaleString('en-US')}`));
             ul.appendChild(li);
+
+            totalAmount += entry.price;
         });
         dateItem.appendChild(ul);
         historyList.appendChild(dateItem);
     }
+
+    document.getElementById("totalAmount").textContent = "오늘 구매한 총 금액: ₩" + totalAmount.toLocaleString('en-US');
 }
 
 function removeSelectedItemsFromList() {
@@ -247,7 +338,10 @@ function formatCurrency(input) {
 function saveShoppingList() {
     const items = [];
     document.querySelectorAll('#itemList li').forEach(li => {
-        items.push(li.querySelector('span').textContent);
+        const itemText = li.querySelector('span').textContent.split(' - ₩');
+        const itemName = itemText[0];
+        const quantity = parseInt(li.querySelector('input[type="number"]').value);
+        items.push({ name: itemName, quantity });
     });
     const shoppingData = {
         budget,
@@ -275,7 +369,7 @@ function shareHistory() {
     for (const date in historyData) {
         textToShare += `${date}:\n`;
         historyData[date].forEach(entry => {
-            textToShare += `- ${entry.itemName}: ₩${entry.price.toLocaleString('en-US')}\n`;
+            textToShare += `- ${entry.itemName} (${entry.quantity}): ₩${entry.price.toLocaleString('en-US')}\n`;
             totalAmount += entry.price;
         });
     }
@@ -292,3 +386,4 @@ function copyToClipboard(text) {
     document.execCommand('copy');
     document.body.removeChild(textArea);
 }
+

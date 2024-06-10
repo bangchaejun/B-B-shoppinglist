@@ -1,7 +1,7 @@
 /* 기본 스타일 */
 body {
     font-family: 'Roboto', sans-serif;
-    background: linear-gradient(to right, #ffecd2 0%, #fcb69f 100%);
+    background: linear-gradient(to right, #b2c9ff 0%, #708cfc 100%);
     margin: 0;
     padding: 0;
     display: flex;
@@ -19,7 +19,7 @@ body {
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     animation: fadeIn 1s ease-in-out;
-    position: relative; /* 상대 위치로 변경 */
+    position: relative;
 }
 
 /* 반응형 디자인 */
@@ -43,7 +43,6 @@ body {
     to { opacity: 1; }
 }
 
-/* 추가 스타일 */
 h1 {
     text-align: center;
     color: #333;
@@ -57,7 +56,7 @@ h1 {
     position: absolute;
     right: 10px;
     bottom: -10px;
-    background-color: #3498db;
+    background-color: #5072ff;
     color: #fff;
     border: none;
     border-radius: 50%;
@@ -73,11 +72,11 @@ h1 {
 }
 
 .helpButton i {
-    margin: 0; /* 아이콘의 마진 제거 */
+    margin: 0;
 }
 
 .helpButton:hover {
-    background-color: #2980b9;
+    background-color: #304bff;
 }
 
 #budgetSection, #addItemSection {
@@ -93,6 +92,10 @@ h1 {
     border: 1px solid #ddd;
     border-radius: 5px;
     font-size: 16px;
+}
+
+#itemNameInput {
+    flex: 3;
 }
 
 .dropdown {
@@ -131,7 +134,7 @@ button {
     padding: 10px 20px;
     border: none;
     border-radius: 5px;
-    background-color: #4caf50;
+    background-color: #5072ff;
     color: #fff;
     font-size: 16px;
     cursor: pointer;
@@ -146,7 +149,7 @@ button i {
 }
 
 button:hover {
-    background-color: #45a049;
+    background-color: #304bff;
 }
 
 ul {
@@ -172,7 +175,7 @@ li:hover {
 }
 
 .purchaseButton {
-    background-color: #4caf50;
+    background-color: #7a9dff;
     color: #fff;
     border: none;
     border-radius: 5px;
@@ -181,6 +184,7 @@ li:hover {
     display: flex;
     align-items: center;
     transition: background-color 0.3s ease;
+    margin-left: 10px;
 }
 
 .purchaseButton i {
@@ -188,7 +192,7 @@ li:hover {
 }
 
 .purchaseButton:hover {
-    background-color: #45a049;
+    background-color: #5072ff;
 }
 
 #totalAmountContainer, #historyContainer {
@@ -231,7 +235,7 @@ li:hover {
 #removeSelectedButton, #clearHistoryButton, #resetButton {
     margin-top: 10px;
     padding: 10px 20px;
-    background-color: #ff6b6b;
+    background-color: #ff6f69;
     color: white;
     border: none;
     border-radius: 5px;
@@ -244,7 +248,7 @@ li:hover {
 }
 
 #removeSelectedButton:hover, #clearHistoryButton:hover, #resetButton:hover {
-    background-color: #ff4c4c;
+    background-color: #ff3b30;
 }
 
 #buttonContainer {
@@ -255,14 +259,14 @@ li:hover {
 #shareButton, #resetButton {
     margin-top: 10px;
     padding: 10px 20px;
-    background-color: #FFEB3B; /* 카카오톡 색상 */
+    background-color: #ffcc00;
     color: black;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    font-weight: bold; /* 글씨를 굵게 */
+    font-weight: bold;
     transition: background-color 0.3s ease;
-    display: inline-block; /* 중앙 정렬 */
+    display: inline-block;
 }
 
 #shareButton i, #resetButton i {
@@ -270,28 +274,28 @@ li:hover {
 }
 
 #shareButton:hover, #resetButton:hover {
-    background-color: #FFDD00;
+    background-color: #ffb300;
 }
 
-/* 마트 휴무일 섹션 */
-#holidaySection {
-    text-align: center;
-    margin-bottom: 20px; /* 상단에 위치할 때 공간 확보 */
+.quantity {
     display: flex;
-    justify-content: center;
-    gap: 10px; /* 버튼 사이 간격 */
+    align-items: center;
 }
 
-#holidaySection button {
-    background-color: #4caf50;
-    color: white;
+.quantity-button {
+    background-color: #ccc;
     border: none;
-    border-radius: 5px;
-    padding: 5px 10px; /* 버튼 크기를 작게 */
+    padding: 10px;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    font-size: 16px;
+    margin: 0 5px;
+    border-radius: 5px;
 }
 
-#holidaySection button:hover {
-    background-color: #45a049;
+.quantity-input {
+    width: 50px;
+    text-align: center;
+    border: 1px solid #ddd;
+    margin: 0 5px;
+    border-radius: 5px;
 }
