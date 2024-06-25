@@ -11,7 +11,6 @@
 <body>
     <div class="container">
         <h1><i class="fas fa-shopping-cart"></i> Shopping List</h1>
-        <button class="helpButton" onclick="location.href='help.html'"><i class="fas fa-question-circle"></i></button>
         <div id="budgetSection">
             <input type="date" id="budgetDateInput" value="">
             <div class="dropdown">
@@ -45,6 +44,10 @@
         <div id="buttonContainer">
             <button id="shareButton" onclick="shareHistory()"><i class="fas fa-share"></i> 쇼핑목록공유</button>
             <button id="resetButton" onclick="resetValues()"><i class="fas fa-undo"></i> 초기화</button>
+        </div>
+        <div class="bottom-buttons">
+            <button class="helpButton" onclick="location.href='help.html'"><i class="fas fa-question-circle"></i></button>
+            <button class="darkModeButton" onclick="toggleDarkMode()"><i class="fas fa-moon"></i></button>
         </div>
     </div>
     <script src="script.js"></script>

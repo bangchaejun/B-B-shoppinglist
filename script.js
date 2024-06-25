@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     loadShoppingList();
     loadHistory();
+    loadDarkMode();
 });
 
 function updateBalance() {
@@ -387,3 +388,15 @@ function copyToClipboard(text) {
     document.body.removeChild(textArea);
 }
 
+function toggleDarkMode() {
+    document.body.classList.toggle('dark-mode');
+    const isDarkMode = document.body.classList.contains('dark-mode');
+    localStorage.setItem('darkMode', isDarkMode);
+}
+
+function loadDarkMode() {
+    const isDarkMode = JSON.parse(localStorage.getItem('darkMode'));
+    if (isDarkMode) {
+        document.body.classList.add('dark-mode');
+    }
+}

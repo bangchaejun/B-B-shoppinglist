@@ -11,6 +11,11 @@ body {
     transition: background 0.3s;
 }
 
+body.dark-mode {
+    background: linear-gradient(to right, #2e2e2e 0%, #1c1c1c 100%);
+    color: #ffffff;
+}
+
 .container {
     max-width: 800px;
     width: 90%;
@@ -22,7 +27,10 @@ body {
     position: relative;
 }
 
-/* 반응형 디자인 */
+body.dark-mode .container {
+    background-color: #333;
+}
+
 @media (max-width: 600px) {
     .container {
         padding: 10px;
@@ -52,10 +60,11 @@ h1 {
     position: relative;
 }
 
-.helpButton {
-    position: absolute;
-    right: 10px;
-    bottom: -10px;
+body.dark-mode h1 {
+    color: #fff;
+}
+
+.helpButton, .darkModeButton {
     background-color: #5072ff;
     color: #fff;
     border: none;
@@ -69,14 +78,28 @@ h1 {
     font-size: 14px;
     width: 30px;
     height: 30px;
+    margin-left: 10px;
 }
 
-.helpButton i {
+.helpButton i, .darkModeButton i {
     margin: 0;
 }
 
-.helpButton:hover {
+.helpButton:hover, .darkModeButton:hover {
     background-color: #304bff;
+}
+
+body.dark-mode .helpButton, body.dark-mode .darkModeButton {
+    background-color: #888;
+}
+
+body.dark-mode .helpButton:hover, body.dark-mode .darkModeButton:hover {
+    background-color: #666;
+}
+
+.button-group {
+    display: flex;
+    gap: 10px;
 }
 
 #budgetSection, #addItemSection {
@@ -98,6 +121,12 @@ h1 {
     flex: 3;
 }
 
+body.dark-mode #budgetInput, body.dark-mode #itemNameInput, body.dark-mode #budgetDateInput {
+    border: 1px solid #666;
+    background-color: #444;
+    color: #fff;
+}
+
 .dropdown {
     position: relative;
     display: inline-block;
@@ -113,6 +142,10 @@ h1 {
     z-index: 1;
 }
 
+body.dark-mode .dropdown-content {
+    background-color: #333;
+}
+
 .dropdown-content div {
     color: black;
     padding: 12px 16px;
@@ -121,8 +154,16 @@ h1 {
     cursor: pointer;
 }
 
+body.dark-mode .dropdown-content div {
+    color: white;
+}
+
 .dropdown-content div:hover {
     background-color: #f1f1f1;
+}
+
+body.dark-mode .dropdown-content div:hover {
+    background-color: #555;
 }
 
 .show {
@@ -152,6 +193,15 @@ button:hover {
     background-color: #304bff;
 }
 
+body.dark-mode button {
+    background-color: #888;
+    color: #fff;
+}
+
+body.dark-mode button:hover {
+    background-color: #666;
+}
+
 ul {
     list-style-type: none;
     padding: 0;
@@ -172,6 +222,15 @@ li {
 li:hover {
     background-color: #f1f1f1;
     transform: translateY(-5px);
+}
+
+body.dark-mode li {
+    background-color: #444;
+    border: 1px solid #666;
+}
+
+body.dark-mode li:hover {
+    background-color: #555;
 }
 
 .purchaseButton {
@@ -195,6 +254,14 @@ li:hover {
     background-color: #5072ff;
 }
 
+body.dark-mode .purchaseButton {
+    background-color: #888;
+}
+
+body.dark-mode .purchaseButton:hover {
+    background-color: #666;
+}
+
 #totalAmountContainer, #historyContainer {
     margin-top: 20px;
     text-align: center;
@@ -209,12 +276,20 @@ li:hover {
     font-weight: bold;
 }
 
+body.dark-mode #totalAmountContainer div, body.dark-mode #historyContainer h2, body.dark-mode #totalAmount, body.dark-mode #budgetStatus, body.dark-mode #date {
+    color: #fff;
+}
+
 #historyContainer {
     margin-top: 30px;
     background-color: #fff;
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+body.dark-mode #historyContainer {
+    background-color: #333;
 }
 
 #historyList li {
@@ -224,7 +299,15 @@ li:hover {
     align-items: center;
 }
 
+body.dark-mode #historyList li {
+    border-bottom: 1px solid #666;
+}
+
 #historyList li:last-child {
+    border-bottom: none;
+}
+
+body.dark-mode #historyList li:last-child {
     border-bottom: none;
 }
 
@@ -249,6 +332,14 @@ li:hover {
 
 #removeSelectedButton:hover, #clearHistoryButton:hover, #resetButton:hover {
     background-color: #ff3b30;
+}
+
+body.dark-mode #removeSelectedButton, body.dark-mode #clearHistoryButton, body.dark-mode #resetButton {
+    background-color: #888;
+}
+
+body.dark-mode #removeSelectedButton:hover, body.dark-mode #clearHistoryButton:hover, body.dark-mode #resetButton:hover {
+    background-color: #666;
 }
 
 #buttonContainer {
@@ -277,6 +368,15 @@ li:hover {
     background-color: #ffb300;
 }
 
+body.dark-mode #shareButton, body.dark-mode #resetButton {
+    background-color: #888;
+    color: #fff;
+}
+
+body.dark-mode #shareButton:hover, body.dark-mode #resetButton:hover {
+    background-color: #666;
+}
+
 .quantity {
     display: flex;
     align-items: center;
@@ -292,10 +392,27 @@ li:hover {
     border-radius: 5px;
 }
 
+body.dark-mode .quantity-button {
+    background-color: #666;
+}
+
 .quantity-input {
     width: 50px;
     text-align: center;
     border: 1px solid #ddd;
     margin: 0 5px;
     border-radius: 5px;
+}
+
+body.dark-mode .quantity-input {
+    border: 1px solid #666;
+    background-color: #444;
+    color: #fff;
+}
+
+.bottom-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
 }
